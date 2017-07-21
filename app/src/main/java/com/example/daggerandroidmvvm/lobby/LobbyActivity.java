@@ -1,8 +1,8 @@
 package com.example.daggerandroidmvvm.lobby;
 
+import android.arch.lifecycle.LifecycleActivity;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -18,18 +18,18 @@ import butterknife.OnClick;
 import dagger.android.AndroidInjection;
 import timber.log.Timber;
 
-public class LobbyActivity extends AppCompatActivity implements LobbyGreetingContract.LobbyView {
-
-    private static final String BUNDLE_DATA_KEY_GREETING = "greeting";
+public class LobbyActivity extends LifecycleActivity {
 
     @Inject
-    LobbyPresenter presenter;
+    LobbyViewModelFactory viewModelFactory;
 
     @BindView(R.id.greeting_textview)
     TextView greetingTextView;
 
     @BindView(R.id.loading_indicator)
     ProgressBar loadingIndicator;
+
+    private LobbyViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,59 +38,46 @@ public class LobbyActivity extends AppCompatActivity implements LobbyGreetingCon
         setContentView(R.layout.lobby_activity);
 
         ButterKnife.bind(this);
-    }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        if (!TextUtils.isEmpty(greetingTextView.getText())) {
-            outState.putCharSequence(BUNDLE_DATA_KEY_GREETING, greetingTextView.getText());
-        }
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(LobbyViewModel.class);
 
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        greetingTextView.setText(savedInstanceState.getCharSequence(BUNDLE_DATA_KEY_GREETING));
+        observeGreetingData();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        presenter.stop();
+        viewModel.cleanup();
     }
 
-    @Override
     @OnClick(R.id.common_greeting_button)
     public void onCommonGreetingButtonClicked() {
-        presenter.loadCommonGreeting();
+        greetingTextView.setVisibility(View.GONE);
+        loadingIndicator.setVisibility(View.VISIBLE);
+        viewModel.loadCommonGreeting();
     }
 
-    @Override
     @OnClick(R.id.lobby_greeting_button)
     public void onLobbyGreetingButtonClicked() {
-        presenter.loadLobbyGreeting();
+        greetingTextView.setVisibility(View.GONE);
+        loadingIndicator.setVisibility(View.VISIBLE);
+        viewModel.loadLobbyGreeting();
     }
 
-    @Override
-    public void displayGreeting(String greeting) {
+    private void observeGreetingData() {
+        viewModel.getGreetingText().observe(this, newValue -> displayGreeting(newValue));
+        viewModel.getGreetingError().observe(this, error -> displayGreetingError(error));
+    }
+
+    private void displayGreeting(String greeting) {
+        loadingIndicator.setVisibility(View.GONE);
         greetingTextView.setVisibility(View.VISIBLE);
         greetingTextView.setText(greeting);
     }
 
-    @Override
-    public void hideGreeting() {
-        greetingTextView.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void displayGreetingError(Throwable throwable) {
+    private void displayGreetingError(Throwable throwable) {
+        loadingIndicator.setVisibility(View.GONE);
         Timber.e(throwable.getMessage());
         Toast.makeText(this, R.string.greeting_error, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void setLoadingIndicator(boolean active) {
-        loadingIndicator.setVisibility(active ? View.VISIBLE : View.GONE);
     }
 }

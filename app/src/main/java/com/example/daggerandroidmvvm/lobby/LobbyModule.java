@@ -18,10 +18,9 @@ public class LobbyModule {
     }
 
     @Provides
-    LobbyPresenter provideLobbyPresenter(LobbyGreetingContract.LobbyView lobbyView,
-                                         LoadCommonGreetingUseCase loadCommonGreetingUseCase,
+    LobbyViewModelFactory provideLobbyViewModelFactory(LoadCommonGreetingUseCase loadCommonGreetingUseCase,
                                          LoadLobbyGreetingUseCase loadLobbyGreetingUseCase,
                                          SchedulersFacade schedulersFacade) {
-        return new LobbyPresenter(lobbyView, loadCommonGreetingUseCase, loadLobbyGreetingUseCase, schedulersFacade);
+        return new LobbyViewModelFactory(loadCommonGreetingUseCase, loadLobbyGreetingUseCase, schedulersFacade);
     }
 }

@@ -8,6 +8,7 @@ project.ext {
     rxAndroidVersion = "2.0.1"
     rxRelayVersion = "2.0.0"
     timberVersion = "4.5.1"
+    lifecycleVersion = "1.0.0-alpha3"
 }
 
 android {
@@ -61,4 +62,9 @@ dependencies {
 
     // Timber
     compile "com.jakewharton.timber:timber:$project.timberVersion"
+
+    // Lifecycle
+    compile "android.arch.lifecycle:runtime:$project.lifecycleVersion"
+    compile "android.arch.lifecycle:extensions:$project.lifecycleVersion"
+    annotationProcessor "android.arch.lifecycle:compiler:$project.lifecycleVersion"
 }
