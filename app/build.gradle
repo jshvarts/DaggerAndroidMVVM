@@ -15,7 +15,7 @@ android {
     compileSdkVersion 25
     buildToolsVersion "26.0.0"
     defaultConfig {
-        applicationId "com.jshvarts.daggerandroidsampleapp"
+        applicationId "com.example.daggerandroidmvvm"
         minSdkVersion 19
         targetSdkVersion 25
         versionCode 1

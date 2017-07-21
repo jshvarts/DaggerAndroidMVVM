@@ -44,21 +44,15 @@ public class LobbyActivity extends LifecycleActivity {
         observeGreetingData();
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        viewModel.cleanup();
-    }
-
     @OnClick(R.id.common_greeting_button)
-    public void onCommonGreetingButtonClicked() {
+    void onCommonGreetingButtonClicked() {
         greetingTextView.setVisibility(View.GONE);
         loadingIndicator.setVisibility(View.VISIBLE);
         viewModel.loadCommonGreeting();
     }
 
     @OnClick(R.id.lobby_greeting_button)
-    public void onLobbyGreetingButtonClicked() {
+    void onLobbyGreetingButtonClicked() {
         greetingTextView.setVisibility(View.GONE);
         loadingIndicator.setVisibility(View.VISIBLE);
         viewModel.loadLobbyGreeting();

@@ -8,6 +8,7 @@ import com.example.daggerandroidmvvm.rx.SchedulersFacade;
 
 import io.reactivex.Single;
 import io.reactivex.disposables.CompositeDisposable;
+import timber.log.Timber;
 
 class LobbyViewModel extends ViewModel {
 
@@ -31,6 +32,11 @@ class LobbyViewModel extends ViewModel {
         this.schedulersFacade = schedulersFacade;
     }
 
+    @Override
+    protected void onCleared() {
+        disposables.clear();
+    }
+
     void loadCommonGreeting() {
         loadGreeting(loadCommonGreetingUseCase.execute());
     }
@@ -45,13 +51,6 @@ class LobbyViewModel extends ViewModel {
 
     MutableLiveData<Throwable> getGreetingError() {
         return greetingError;
-    }
-
-    /**
-     * Clears disposables, releases resources, etc.
-     */
-    void cleanup() {
-        disposables.clear();
     }
 
     private void loadGreeting(Single<String> single) {
