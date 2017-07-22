@@ -36,6 +36,6 @@ public class Response<T> {
     }
 
     public static <T> Response<T> error(Throwable error) {
-        return new Response<>(ERROR,null, error);
+        return new Response<>(ERROR, null, error);
     }
 }

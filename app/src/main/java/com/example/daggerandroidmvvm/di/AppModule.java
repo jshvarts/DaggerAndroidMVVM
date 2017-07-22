@@ -3,7 +3,7 @@ package com.example.daggerandroidmvvm.di;
 import android.content.Context;
 
 import com.example.daggerandroidmvvm.App;
-import com.example.daggerandroidmvvm.common.domain.data.CommonGreetingRepository;
+import com.example.daggerandroidmvvm.common.domain.model.CommonGreetingRepository;
 
 import javax.inject.Singleton;
 

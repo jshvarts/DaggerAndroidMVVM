@@ -1,4 +1,4 @@
-package com.example.daggerandroidmvvm.common.domain.data;
+package com.example.daggerandroidmvvm.common.domain.model;
 
 import io.reactivex.Single;
 
