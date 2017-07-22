@@ -3,7 +3,7 @@ package com.example.daggerandroidmvvm.lobby;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 
-import com.example.daggerandroidmvvm.common.LoadCommonGreetingUseCase;
+import com.example.daggerandroidmvvm.common.domain.interactors.LoadCommonGreetingUseCase;
 import com.example.daggerandroidmvvm.rx.SchedulersFacade;
 
 class LobbyViewModelFactory implements ViewModelProvider.Factory {

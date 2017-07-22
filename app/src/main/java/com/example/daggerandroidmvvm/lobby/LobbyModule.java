@@ -1,6 +1,6 @@
 package com.example.daggerandroidmvvm.lobby;
 
-import com.example.daggerandroidmvvm.common.LoadCommonGreetingUseCase;
+import com.example.daggerandroidmvvm.common.domain.interactors.LoadCommonGreetingUseCase;
 import com.example.daggerandroidmvvm.rx.SchedulersFacade;
 
 import dagger.Module;

@@ -1,4 +1,6 @@
-package com.example.daggerandroidmvvm.common;
+package com.example.daggerandroidmvvm.common.domain.interactors;
+
+import com.example.daggerandroidmvvm.common.domain.data.CommonGreetingRepository;
 
 import javax.inject.Inject;
 

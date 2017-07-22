@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.daggerandroidmvvm.R;
+import com.example.daggerandroidmvvm.common.viewmodel.Response;
 
 import javax.inject.Inject;
 
@@ -41,37 +42,52 @@ public class LobbyActivity extends LifecycleActivity {
 
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(LobbyViewModel.class);
 
-        observeGreetingData();
+        observeDataLoading();
     }
 
     @OnClick(R.id.common_greeting_button)
     void onCommonGreetingButtonClicked() {
-        greetingTextView.setVisibility(View.GONE);
-        loadingIndicator.setVisibility(View.VISIBLE);
         viewModel.loadCommonGreeting();
     }
 
     @OnClick(R.id.lobby_greeting_button)
     void onLobbyGreetingButtonClicked() {
-        greetingTextView.setVisibility(View.GONE);
-        loadingIndicator.setVisibility(View.VISIBLE);
         viewModel.loadLobbyGreeting();
     }
 
-    private void observeGreetingData() {
-        viewModel.getGreetingText().observe(this, newValue -> displayGreeting(newValue));
-        viewModel.getGreetingError().observe(this, error -> displayGreetingError(error));
+    private void observeDataLoading() {
+        viewModel.getResponse().observe(this, response -> processResponse(response));
     }
 
-    private void displayGreeting(String greeting) {
+    private void processResponse(Response<String> response) {
+        switch (response.status) {
+            case LOADING:
+                onLoading();
+                break;
+
+            case SUCCESS:
+                onResponseSuccess(response.data);
+                break;
+
+            case ERROR:
+                onResponseError(response.error);
+        }
+    }
+
+    private void onLoading() {
+        greetingTextView.setVisibility(View.GONE);
+        loadingIndicator.setVisibility(View.VISIBLE);
+    }
+
+    private void onResponseSuccess(String data) {
         loadingIndicator.setVisibility(View.GONE);
         greetingTextView.setVisibility(View.VISIBLE);
-        greetingTextView.setText(greeting);
+        greetingTextView.setText(data);
     }
 
-    private void displayGreetingError(Throwable throwable) {
+    private void onResponseError(Throwable error) {
         loadingIndicator.setVisibility(View.GONE);
-        Timber.e(throwable.getMessage());
+        Timber.e(error.getMessage());
         Toast.makeText(this, R.string.greeting_error, Toast.LENGTH_SHORT).show();
     }
 }

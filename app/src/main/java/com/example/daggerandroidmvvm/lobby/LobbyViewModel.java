@@ -3,12 +3,12 @@ package com.example.daggerandroidmvvm.lobby;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
-import com.example.daggerandroidmvvm.common.LoadCommonGreetingUseCase;
+import com.example.daggerandroidmvvm.common.domain.interactors.LoadCommonGreetingUseCase;
+import com.example.daggerandroidmvvm.common.viewmodel.Response;
 import com.example.daggerandroidmvvm.rx.SchedulersFacade;
 
 import io.reactivex.Single;
 import io.reactivex.disposables.CompositeDisposable;
-import timber.log.Timber;
 
 class LobbyViewModel extends ViewModel {
 
@@ -18,11 +18,9 @@ class LobbyViewModel extends ViewModel {
 
     private final SchedulersFacade schedulersFacade;
 
-    private final MutableLiveData<String> greetingText = new MutableLiveData<>();
-
-    private final MutableLiveData<Throwable> greetingError = new MutableLiveData<>();
-
     private final CompositeDisposable disposables = new CompositeDisposable();
+
+    private final MutableLiveData<Response<String>> response = new MutableLiveData<>();
 
     LobbyViewModel(LoadCommonGreetingUseCase loadCommonGreetingUseCase,
                           LoadLobbyGreetingUseCase loadLobbyGreetingUseCase,
@@ -45,21 +43,18 @@ class LobbyViewModel extends ViewModel {
         loadGreeting(loadLobbyGreetingUseCase.execute());
     }
 
-    MutableLiveData<String> getGreetingText() {
-        return greetingText;
-    }
-
-    MutableLiveData<Throwable> getGreetingError() {
-        return greetingError;
+    MutableLiveData<Response<String>> getResponse() {
+        return response;
     }
 
     private void loadGreeting(Single<String> single) {
         disposables.add(single
                 .subscribeOn(schedulersFacade.io())
                 .observeOn(schedulersFacade.ui())
+                .doOnSubscribe(s -> response.setValue(Response.loading()))
                 .subscribe(
-                        greeting -> greetingText.setValue(greeting),
-                        error -> greetingError.setValue(error)
+                        greeting -> response.setValue(Response.success(greeting)),
+                        throwable -> response.setValue(Response.error(throwable))
                 )
         );
     }
