@@ -71,6 +71,10 @@ public class LobbyActivity extends LifecycleActivity {
 
             case ERROR:
                 onResponseError(response.error);
+                break;
+
+            default:
+                onResponseError(new IllegalArgumentException("Unexpected response type."));
         }
     }
 
