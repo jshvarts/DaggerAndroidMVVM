@@ -6,7 +6,6 @@ project.ext {
     butterKnifeVersion = "8.5.1"
     rxJavaVersion = "2.1.0"
     rxAndroidVersion = "2.0.1"
-    rxRelayVersion = "2.0.0"
     timberVersion = "4.5.1"
     lifecycleVersion = "1.0.0-alpha3"
 }
@@ -56,9 +55,6 @@ dependencies {
     // ReactiveX
     compile "io.reactivex.rxjava2:rxjava:$project.rxJavaVersion"
     compile "io.reactivex.rxjava2:rxandroid:$project.rxAndroidVersion"
-
-    // RxRelay
-    compile "com.jakewharton.rxrelay2:rxrelay:$project.rxRelayVersion"
 
     // Timber
     compile "com.jakewharton.timber:timber:$project.timberVersion"
