@@ -58,16 +58,16 @@ public class LobbyActivity extends LifecycleActivity {
     }
 
     private void observeLoadingStatus() {
-        viewModel.getLoadingStatus().observe(this, loading -> isLoading(loading));
+        viewModel.getLoadingStatus().observe(this, isLoading -> processLoadingStatus(isLoading));
     }
 
     private void observeResponse() {
         viewModel.getResponse().observe(this, response -> processResponse(response));
     }
 
-    private void isLoading(boolean loading) {
-        greetingTextView.setVisibility(loading ? View.GONE : View.VISIBLE);
-        loadingIndicator.setVisibility(loading ? View.VISIBLE : View.GONE);
+    private void processLoadingStatus(boolean isLoading) {
+        greetingTextView.setVisibility(isLoading ? View.GONE : View.VISIBLE);
+        loadingIndicator.setVisibility(isLoading ? View.VISIBLE : View.GONE);
     }
 
     private void processResponse(Response<String> response) {
