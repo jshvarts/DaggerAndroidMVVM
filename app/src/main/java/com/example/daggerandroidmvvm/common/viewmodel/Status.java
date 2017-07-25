@@ -5,6 +5,5 @@ package com.example.daggerandroidmvvm.common.viewmodel;
  */
 public enum Status {
     SUCCESS,
-    ERROR,
-    LOADING
+    ERROR
 }

@@ -42,7 +42,9 @@ public class LobbyActivity extends LifecycleActivity {
 
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(LobbyViewModel.class);
 
-        observeDataLoading();
+        observeLoadingStatus();
+
+        observeResponse();
     }
 
     @OnClick(R.id.common_greeting_button)
@@ -55,43 +57,29 @@ public class LobbyActivity extends LifecycleActivity {
         viewModel.loadLobbyGreeting();
     }
 
-    private void observeDataLoading() {
+    private void observeLoadingStatus() {
+        viewModel.getLoadingStatus().observe(this, loading -> isLoading(loading));
+    }
+
+    private void observeResponse() {
         viewModel.getResponse().observe(this, response -> processResponse(response));
+    }
+
+    private void isLoading(boolean loading) {
+        greetingTextView.setVisibility(loading ? View.GONE : View.VISIBLE);
+        loadingIndicator.setVisibility(loading ? View.VISIBLE : View.GONE);
     }
 
     private void processResponse(Response<String> response) {
         switch (response.status) {
-            case LOADING:
-                onLoading();
-                break;
-
             case SUCCESS:
-                onResponseSuccess(response.data);
+                greetingTextView.setText(response.data);
                 break;
 
             case ERROR:
-                onResponseError(response.error);
+                Timber.e(response.error);
+                Toast.makeText(this, R.string.greeting_error, Toast.LENGTH_SHORT).show();
                 break;
-
-            default:
-                onResponseError(new IllegalArgumentException("Unexpected response type."));
         }
-    }
-
-    private void onLoading() {
-        greetingTextView.setVisibility(View.GONE);
-        loadingIndicator.setVisibility(View.VISIBLE);
-    }
-
-    private void onResponseSuccess(String data) {
-        loadingIndicator.setVisibility(View.GONE);
-        greetingTextView.setVisibility(View.VISIBLE);
-        greetingTextView.setText(data);
-    }
-
-    private void onResponseError(Throwable error) {
-        loadingIndicator.setVisibility(View.GONE);
-        Timber.e(error.getMessage());
-        Toast.makeText(this, R.string.greeting_error, Toast.LENGTH_SHORT).show();
     }
 }

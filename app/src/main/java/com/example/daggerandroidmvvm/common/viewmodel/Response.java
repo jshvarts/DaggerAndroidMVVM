@@ -2,7 +2,6 @@ package com.example.daggerandroidmvvm.common.viewmodel;
 
 import android.support.annotation.Nullable;
 
-import static com.example.daggerandroidmvvm.common.viewmodel.Status.LOADING;
 import static com.example.daggerandroidmvvm.common.viewmodel.Status.SUCCESS;
 import static com.example.daggerandroidmvvm.common.viewmodel.Status.ERROR;
 
@@ -25,10 +24,6 @@ public class Response<T> {
         this.status = status;
         this.data = data;
         this.error = error;
-    }
-
-    public static <T> Response<T> loading() {
-        return new Response<>(LOADING, null, null);
     }
 
     public static <T> Response<T> success(T data) {
