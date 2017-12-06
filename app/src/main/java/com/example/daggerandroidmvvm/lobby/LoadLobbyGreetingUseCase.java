@@ -1,10 +1,12 @@
 package com.example.daggerandroidmvvm.lobby;
 
+import com.example.daggerandroidmvvm.common.domain.interactors.LoadGreetingUseCase;
+
 import javax.inject.Inject;
 
 import io.reactivex.Single;
 
-class LoadLobbyGreetingUseCase {
+class LoadLobbyGreetingUseCase implements LoadGreetingUseCase {
     private final LobbyGreetingRepository greetingRepository;
 
     @Inject
@@ -12,7 +14,8 @@ class LoadLobbyGreetingUseCase {
         this.greetingRepository = greetingRepository;
     }
 
-    Single<String> execute() {
+    @Override
+    public Single<String> execute() {
         return greetingRepository.getGreeting();
     }
 }

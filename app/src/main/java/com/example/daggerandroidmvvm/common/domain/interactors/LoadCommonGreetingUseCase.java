@@ -6,7 +6,7 @@ import javax.inject.Inject;
 
 import io.reactivex.Single;
 
-public class LoadCommonGreetingUseCase {
+public class LoadCommonGreetingUseCase implements LoadGreetingUseCase {
     private final CommonGreetingRepository greetingRepository;
 
     @Inject
@@ -14,6 +14,7 @@ public class LoadCommonGreetingUseCase {
         this.greetingRepository = greetingRepository;
     }
 
+    @Override
     public Single<String> execute() {
         return greetingRepository.getGreeting();
     }

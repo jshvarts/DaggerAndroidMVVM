@@ -4,10 +4,10 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
 import com.example.daggerandroidmvvm.common.domain.interactors.LoadCommonGreetingUseCase;
+import com.example.daggerandroidmvvm.common.domain.interactors.LoadGreetingUseCase;
 import com.example.daggerandroidmvvm.common.viewmodel.Response;
 import com.example.daggerandroidmvvm.rx.SchedulersFacade;
 
-import io.reactivex.Single;
 import io.reactivex.disposables.CompositeDisposable;
 
 class LobbyViewModel extends ViewModel {
@@ -38,11 +38,11 @@ class LobbyViewModel extends ViewModel {
     }
 
     void loadCommonGreeting() {
-        loadGreeting(loadCommonGreetingUseCase.execute());
+        loadGreeting(loadCommonGreetingUseCase);
     }
 
     void loadLobbyGreeting() {
-        loadGreeting(loadLobbyGreetingUseCase.execute());
+        loadGreeting(loadLobbyGreetingUseCase);
     }
 
     MutableLiveData<Response<String>> getResponse() {
@@ -53,8 +53,8 @@ class LobbyViewModel extends ViewModel {
         return loadingStatus;
     }
 
-    private void loadGreeting(Single<String> single) {
-        disposables.add(single
+    private void loadGreeting(LoadGreetingUseCase loadGreetingUseCase) {
+        disposables.add(loadGreetingUseCase.execute()
                 .subscribeOn(schedulersFacade.io())
                 .observeOn(schedulersFacade.ui())
                 .doOnSubscribe(s -> loadingStatus.setValue(true))
