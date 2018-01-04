@@ -1,9 +1,10 @@
 package com.example.daggerandroidmvvm.common.viewmodel;
 
 /**
- * Status of a response provided to the UI
+ * Possible status types of a response provided to the UI
  */
 public enum Status {
+    LOADING,
     SUCCESS,
     ERROR
 }

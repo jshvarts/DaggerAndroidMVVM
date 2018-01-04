@@ -20,9 +20,7 @@ class LobbyViewModel extends ViewModel {
 
     private final CompositeDisposable disposables = new CompositeDisposable();
 
-    private final MutableLiveData<Response<String>> response = new MutableLiveData<>();
-
-    private final MutableLiveData<Boolean> loadingStatus = new MutableLiveData<>();
+    private final MutableLiveData<Response> response = new MutableLiveData<>();
 
     LobbyViewModel(LoadCommonGreetingUseCase loadCommonGreetingUseCase,
                           LoadLobbyGreetingUseCase loadLobbyGreetingUseCase,
@@ -45,20 +43,15 @@ class LobbyViewModel extends ViewModel {
         loadGreeting(loadLobbyGreetingUseCase);
     }
 
-    MutableLiveData<Response<String>> getResponse() {
+    MutableLiveData<Response> response() {
         return response;
-    }
-
-    MutableLiveData<Boolean> getLoadingStatus() {
-        return loadingStatus;
     }
 
     private void loadGreeting(LoadGreetingUseCase loadGreetingUseCase) {
         disposables.add(loadGreetingUseCase.execute()
                 .subscribeOn(schedulersFacade.io())
                 .observeOn(schedulersFacade.ui())
-                .doOnSubscribe(s -> loadingStatus.setValue(true))
-                .doAfterTerminate(() -> loadingStatus.setValue(false))
+                .doOnSubscribe(__ -> response.setValue(Response.loading()))
                 .subscribe(
                         greeting -> response.setValue(Response.success(greeting)),
                         throwable -> response.setValue(Response.error(throwable))

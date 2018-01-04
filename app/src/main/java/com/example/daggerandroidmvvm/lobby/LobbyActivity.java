@@ -1,8 +1,8 @@
 package com.example.daggerandroidmvvm.lobby;
 
-import android.arch.lifecycle.LifecycleActivity;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -19,7 +19,7 @@ import butterknife.OnClick;
 import dagger.android.AndroidInjection;
 import timber.log.Timber;
 
-public class LobbyActivity extends LifecycleActivity {
+public class LobbyActivity extends AppCompatActivity {
 
     @Inject
     LobbyViewModelFactory viewModelFactory;
@@ -42,9 +42,7 @@ public class LobbyActivity extends LifecycleActivity {
 
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(LobbyViewModel.class);
 
-        observeLoadingStatus();
-
-        observeResponse();
+        viewModel.response().observe(this, response -> processResponse(response));
     }
 
     @OnClick(R.id.common_greeting_button)
@@ -57,29 +55,37 @@ public class LobbyActivity extends LifecycleActivity {
         viewModel.loadLobbyGreeting();
     }
 
-    private void observeLoadingStatus() {
-        viewModel.getLoadingStatus().observe(this, isLoading -> processLoadingStatus(isLoading));
-    }
-
-    private void observeResponse() {
-        viewModel.getResponse().observe(this, response -> processResponse(response));
-    }
-
-    private void processLoadingStatus(boolean isLoading) {
-        greetingTextView.setVisibility(isLoading ? View.GONE : View.VISIBLE);
-        loadingIndicator.setVisibility(isLoading ? View.VISIBLE : View.GONE);
-    }
-
-    private void processResponse(Response<String> response) {
+    private void processResponse(Response response) {
         switch (response.status) {
+            case LOADING:
+                renderLoadingState();
+                break;
+
             case SUCCESS:
-                greetingTextView.setText(response.data);
+                renderDataState(response.data);
                 break;
 
             case ERROR:
-                Timber.e(response.error);
-                Toast.makeText(this, R.string.greeting_error, Toast.LENGTH_SHORT).show();
+                renderErrorState(response.error);
                 break;
         }
+    }
+
+    private void renderLoadingState() {
+        greetingTextView.setVisibility(View.GONE);
+        loadingIndicator.setVisibility(View.VISIBLE);
+    }
+
+    private void renderDataState(String greeting) {
+        loadingIndicator.setVisibility(View.GONE);
+        greetingTextView.setVisibility(View.VISIBLE);
+        greetingTextView.setText(greeting);
+    }
+
+    private void renderErrorState(Throwable throwable) {
+        Timber.e(throwable);
+        loadingIndicator.setVisibility(View.GONE);
+        greetingTextView.setVisibility(View.GONE);
+        Toast.makeText(this, R.string.greeting_error, Toast.LENGTH_SHORT).show();
     }
 }
